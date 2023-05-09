@@ -23,9 +23,9 @@ export default function handler(req) {
   } else if(searchParams.getAll('name').length === 1) {
     title = makeTitle(searchParams.get('name')) || 'Codante.io';
     if(title.includes('/')) {
-      const [subtitle, title] = title.split('/');
-      title = title.trim();
-      subtitle = subtitle.trim();
+      const [newSubtitle, newTitle] = title.split('/');
+      title = newTitle.trim();
+      subtitle = newSubtitle.trim();
 
       title?.charAt(0).toUpperCase()
       subtitle?.charAt(0).toUpperCase()
