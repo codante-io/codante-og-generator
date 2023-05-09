@@ -12,8 +12,19 @@ function makeTitle(slug) {
 
 export default function handler(req) {
   const { searchParams } = new URL(req.url);
-  const slug = searchParams.get('name');
-  const name = makeTitle(slug) || 'Codante.io';
+  let title = 'Codante.io';
+  let subtitle = '';
+
+  if (searchParams.getAll('name').length === 2) {
+    subtitle = makeTitle(searchParams.getAll('name')[0]) || '';
+    subtitle = subtitle.toLowerCase().includes('projeto') ? `🛠️ ${subtitle}`: subtitle
+    subtitle = subtitle.toLowerCase().includes('workshop') ? `📚 ${subtitle}`: subtitle
+    title = makeTitle(searchParams.getAll('name')[1]) || 'Codante.io';
+  } else if(searchParams.getAll('name').length === 1) {
+    title = makeTitle(searchParams.get('name')) || 'Codante.io';
+  } else {
+    title = 'Codante.io'
+  }
 
   return new ImageResponse(
     (
@@ -92,15 +103,29 @@ export default function handler(req) {
         <div
           style={{
             display: 'flex',
+            fontSize: 30,
+            marginTop: '50px',
+            marginBottom: '-30px',
+            fontStyle: 'normal',
+            color: '#5282FF',
+            lineHeight: 1.2,
+            whiteSpace: 'pre-wrap',
+          }}
+        >
+          <b>{subtitle}</b>
+        </div>
+        <div
+          style={{
+            display: 'flex',
             fontSize: 45,
-            margin: '30px 80px',
+            margin: '50px 200px',
             fontStyle: 'normal',
             color: 'black',
             lineHeight: 1.2,
             whiteSpace: 'pre-wrap',
           }}
         >
-          <b>{name}</b>
+          <b>{title}</b>
         </div>
       </div>
     ),
