@@ -22,6 +22,14 @@ export default function handler(req) {
     title = makeTitle(searchParams.getAll('name')[1]) || 'Codante.io';
   } else if(searchParams.getAll('name').length === 1) {
     title = makeTitle(searchParams.get('name')) || 'Codante.io';
+    if(title.includes('/')) {
+      const [subtitle, title] = title.split('/');
+      title = title.trim();
+      subtitle = subtitle.trim();
+
+      title?.charAt(0).toUpperCase()
+      subtitle?.charAt(0).toUpperCase()
+    }
   } else {
     title = 'Codante.io'
   }
