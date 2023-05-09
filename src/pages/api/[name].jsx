@@ -5,14 +5,15 @@ export const config = {
 };
 
 function makeTitle(slug) {
-  const text = slug.toLowerCase().replace(/-/g,' ')
-  text.charAt(0).toUpperCase()
-  return text.charAt(0).toUpperCase() + text.slice(1)
+  const text = slug?.toLowerCase().replace(/-/g, ' ');
+  text?.charAt(0).toUpperCase();
+  return text?.charAt(0).toUpperCase() + text?.slice(1);
 }
 
-export function GET(request, {params}) {
-  const slug = params.name
-  const name = makeTitle(slug) || 'Codante.io'
+export default function handler(req) {
+  const { searchParams } = new URL(req.url);
+  const slug = searchParams.get('name');
+  const name = makeTitle(slug) || 'Codante.io';
 
   return new ImageResponse(
     (
