@@ -47,6 +47,9 @@ export default function handler(req) {
   subtitle = subtitle.toLowerCase().includes('workshop')
     ? `📚 ${subtitle}`
     : subtitle;
+  subtitle = subtitle.toLowerCase().includes('trilha')
+    ? `🚠 ${subtitle}`
+    : subtitle;
 
   return new ImageResponse(
     (
