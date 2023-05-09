@@ -4,10 +4,16 @@ export const config = {
   runtime: 'edge',
 };
 
-function makeTitle(slug) {
+function makeTitleFromSlug(slug) {
   const text = slug?.toLowerCase().replace(/-/g, ' ');
   text?.charAt(0).toUpperCase();
   return text?.charAt(0).toUpperCase() + text?.slice(1);
+}
+
+function toTitleCase(str) {
+  return str.toLowerCase().replace(/(?:^|\s|-)\w/g, function (match) {
+    return match.toUpperCase();
+  });
 }
 
 export default function handler(req) {
@@ -16,23 +22,31 @@ export default function handler(req) {
   let subtitle = '';
 
   if (searchParams.getAll('name').length === 2) {
-    subtitle = makeTitle(searchParams.getAll('name')[0]) || '';
-    subtitle = subtitle.toLowerCase().includes('projeto') ? `🛠️ ${subtitle}`: subtitle
-    subtitle = subtitle.toLowerCase().includes('workshop') ? `📚 ${subtitle}`: subtitle
-    title = makeTitle(searchParams.getAll('name')[1]) || 'Codante.io';
-  } else if(searchParams.getAll('name').length === 1) {
-    title = makeTitle(searchParams.get('name')) || 'Codante.io';
-    if(title.includes('/')) {
+    subtitle = makeTitleFromSlug(searchParams.getAll('name')[0]) || '';
+    title = makeTitleFromSlug(searchParams.getAll('name')[1]) || 'Codante.io';
+  } else if (searchParams.getAll('name').length === 1) {
+    title = makeTitleFromSlug(searchParams.get('name')) || 'Codante.io';
+
+    // fix for titles with subtitle in production
+    if (title.includes('/')) {
       const [newSubtitle, newTitle] = title.split('/');
       title = newTitle.trim();
       subtitle = newSubtitle.trim();
 
-      title?.charAt(0).toUpperCase()
-      subtitle?.charAt(0).toUpperCase()
+      title = toTitleCase(title);
+      subtitle = toTitleCase(subtitle);
     }
   } else {
-    title = 'Codante.io'
+    title = 'Codante.io';
   }
+
+  // add icons to subtitle
+  subtitle = subtitle.toLowerCase().includes('projeto')
+    ? `🛠️ ${subtitle}`
+    : subtitle;
+  subtitle = subtitle.toLowerCase().includes('workshop')
+    ? `📚 ${subtitle}`
+    : subtitle;
 
   return new ImageResponse(
     (
